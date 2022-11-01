@@ -133,6 +133,8 @@ void Yield();
 
 int ReadInt();
 void PrintInt(int number);
+void ReadString(char buffer[], int length);
+void PrintString(char buffer[]);
 
 #endif /* IN_ASM */
 

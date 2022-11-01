@@ -291,19 +291,28 @@ ExceptionHandler(ExceptionType which)
                     int virtAddr = machine->ReadRegister(4);
                     int reserved_length = machine->ReadRegister(5);
 
-                    char* buffer = new char[reserved_length];
+                    char* buffer = new char[reserved_length + 1];
                     int actual_length = gSynchConsole->Read(buffer,reserved_length);
 
-                    System2User(virtAddr, actual_length, buffer);
+                    buffer[actual_length] = '\n';
+
+                    System2User(virtAddr, actual_length + 1, buffer);
                     delete[] buffer;
                     break;
                 }
                 case SC_PrintString:
                 {
                     int virtAddr = machine->ReadRegister(4);
-                    char *buffer = new char[256];
-                    
+                    char *buffer;
 
+                    buffer = User2System(virtAddr,10000);
+
+                    int endIndex = 0;
+                    while(buffer[endIndex] != '\0' && endIndex <= 10000)
+                        endIndex++;
+
+                    gSynchConsole->Write(buffer, endIndex + 1);
+                    delete[] buffer;
                     break;
                 }
             }
