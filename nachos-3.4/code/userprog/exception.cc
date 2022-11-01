@@ -261,9 +261,14 @@ ExceptionHandler(ExceptionType which)
                 {
                     int number = machine->ReadRegister(4);
                     char *buffer = new char[11];
-                    int sign = number < 0 ? -1 : 1;
-                    int index = 10;
-                    
+
+                    int sign;
+                    if (number >= 0)
+                        sign = 1;
+                    else
+                        sign = -1;
+
+                    int index = 10;                   
                     if (number == 0)
                         gSynchConsole->Write("0\n", 2);
 
