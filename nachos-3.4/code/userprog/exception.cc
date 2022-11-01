@@ -300,9 +300,11 @@ ExceptionHandler(ExceptionType which)
                 }
                 case SC_PrintString:
                 {
-                    // int virtAddr = machine->ReadRegister(4);
+                    int virtAddr = machine->ReadRegister(4);
+                    char *buffer = new char[256];
+                    
 
-                    // break;
+                    break;
                 }
             }
             IncreasePC();
