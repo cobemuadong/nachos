@@ -321,6 +321,12 @@ void ExceptionHandler(ExceptionType which)
             delete[] buffer;
             break;
         }
+        case SC_PrintChar:
+        {
+            char character = (char)machine->ReadRegister(4);
+	        gSynchConsole->Write(&character, 1);
+            break;
+        }
         }
         IncreasePC();
         break;
