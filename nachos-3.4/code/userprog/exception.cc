@@ -52,16 +52,17 @@ bool isOverflow(char *buffer, int start, int end, int sign);
 
 void IncreasePC()
 {
-    // update previous to current
-    int current = machine->ReadRegister(PCReg);
-    machine->WriteRegister(PrevPCReg, current);
+    //registers[PrevPCReg] = registers[PCReg];
+	int curr = machine->ReadRegister(PCReg);
+	machine->WriteRegister(PrevPCReg, curr);
 
-    // update current to next
-    int next = machine->ReadRegister(NextPCReg);
-    machine->WriteRegister(PCReg, next);
+	//registers[PCReg] = registers[NextPCReg];
+	int next = machine->ReadRegister(NextPCReg);
+	machine->WriteRegister(PCReg, next);
 
-    // update next to next of Next
-    machine->WriteRegister(NextPCReg, next + 4);
+	//registers[NextPCReg] = pcAfter;
+	int after = machine->ReadRegister(NextPCReg) + 4;
+	machine->WriteRegister(NextPCReg, after);
 }
 
 /*
