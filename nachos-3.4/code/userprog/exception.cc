@@ -336,7 +336,7 @@ void ExceptionHandler(ExceptionType which)
                 }
                 else if(bytes < 0){
                     DEBUG('a', "ERROR: Console error\n");
-			        machine->WriteRegister(2, 0);	//Get NULL for output
+			        machine->WriteRegister(2, 0);
                 }
                 else{
                     machine->WriteRegister(2,character);
