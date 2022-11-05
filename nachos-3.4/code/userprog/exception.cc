@@ -324,8 +324,25 @@ void ExceptionHandler(ExceptionType which)
             case SC_ReadChar:
             {
                 char character;
-                gSynchConsole->Read(&character,1);
-                machine->WriteRegister(2,character);
+                int bytes = gSynchConsole->Read(&character,1);
+                if(bytes > 1){
+                    printf("\nPlease just enter 1 letter");
+                    DEBUG('a',"\nPlease just enter 1 letter");
+                    machine->WriteRegister(2,0);
+                }
+                else if(bytes == 0){
+                    printf("\nYour input is empty!");
+                    DEBUG('a',"\nYour input is empty!");
+                    machine->WriteRegister(2,0);	
+                }
+                else if(bytes < 0){
+                    DEBUG('a', "ERROR: Console error\n");
+			        machine->WriteRegister(2, 0);	//Get NULL for output
+                }
+                else{
+                    machine->WriteRegister(2,character);
+                }
+
                 break;
             }
             case SC_PrintChar:
