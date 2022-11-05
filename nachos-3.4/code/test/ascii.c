@@ -3,17 +3,19 @@
 int main()
 {
 	int i;
-	PrintString("========== Bang ma Ascii ==========\n");
-	PrintString("He thap phan\tKy tu\n");
-
+	char c;
+	PrintString("Bang max ascii\n");
+	
 	for (i = 32; i < 127; i++)
 	{
-		PrintChar('\t');
+		c = (char)i;
 		PrintInt(i);
+		PrintChar('.');
+		PrintChar(c);
 		PrintChar('\t');
-		PrintChar(i);
-		PrintChar('\n');
+		if ((i - 31) % 10 == 0)
+			PrintChar('\n');
 	}
-
+	PrintChar('\n');
 	return 0;
 }
