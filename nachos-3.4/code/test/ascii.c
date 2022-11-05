@@ -4,7 +4,7 @@ int main()
 {
 	int i;
 	char c;
-	PrintString("Bang max ascii\n");
+	PrintString("Bang ma ascii\n");
 	
 	for (i = 32; i < 127; i++)
 	{
