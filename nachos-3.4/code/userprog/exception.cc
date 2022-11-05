@@ -287,7 +287,6 @@ void ExceptionHandler(ExceptionType which)
                 }
                 index++;
                 gSynchConsole->Write(buffer + index, 11 - index);
-                gSynchConsole->Write("\n", 1);
 
                 delete[] buffer;
                 break;
@@ -317,7 +316,7 @@ void ExceptionHandler(ExceptionType which)
                 while (buffer[endIndex] != '\0' && endIndex <= 10000)
                     endIndex++;
 
-                gSynchConsole->Write(buffer, endIndex + 1);
+                gSynchConsole->Write(buffer, endIndex);
                 delete[] buffer;
                 break;
             }

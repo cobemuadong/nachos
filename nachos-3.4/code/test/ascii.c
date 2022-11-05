@@ -3,16 +3,19 @@
 int main()
 {
 	int i;
+	char c;
 	PrintString("Bang ma ascii\n");
-
-	for (int i = 32; i < 127; i++)
+	
+	for (i = 32; i < 127; i++)
 	{
-		c = char(i);
+		c = (char)i;
 		PrintInt(i);
-		PrintChar('\t');
+		PrintChar('.');
 		PrintChar(c);
-		PrintChar('\n');
+		PrintChar('\t');
+		if ((i - 31) % 10 == 0)
+			PrintChar('\n');
 	}
-
+	PrintChar('\n');
 	return 0;
 }

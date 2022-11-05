@@ -35,7 +35,7 @@ CPP = gcc -E
 INCDIR =-I../userprog -I../threads
 CFLAGS = -G 0 -c $(INCDIR)
 
-all: halt shell matmult sort exp ascii help
+all: halt shell matmult sort ascii help syscall_int_demo syscall_char_demo syscall_string_demo
 
 start.o: start.s ../userprog/syscall.h
 	$(CPP) $(CPPFLAGS) start.c > strt.s
@@ -83,3 +83,21 @@ help.o: help.c
 help: help.o start.o
 	$(LD) $(LDFLAGS) start.o help.o -o help.coff
 	../bin/coff2noff help.coff help
+
+syscall_int_demo.o: syscall_int_demo.c
+	$(CC) $(CFLAGS) -c syscall_int_demo.c
+syscall_int_demo: syscall_int_demo.o start.o
+	$(LD) $(LDFLAGS) start.o syscall_int_demo.o -o syscall_int_demo.coff
+	../bin/coff2noff syscall_int_demo.coff syscall_int_demo
+
+syscall_char_demo.o: syscall_char_demo.c
+	$(CC) $(CFLAGS) -c syscall_char_demo.c
+syscall_char_demo: syscall_char_demo.o start.o
+	$(LD) $(LDFLAGS) start.o syscall_char_demo.o -o syscall_char_demo.coff
+	../bin/coff2noff syscall_char_demo.coff syscall_char_demo
+
+syscall_string_demo.o: syscall_string_demo.c
+	$(CC) $(CFLAGS) -c syscall_string_demo.c
+syscall_string_demo: syscall_string_demo.o start.o
+	$(LD) $(LDFLAGS) start.o syscall_string_demo.o -o syscall_string_demo.coff
+	../bin/coff2noff syscall_string_demo.coff syscall_string_demo
