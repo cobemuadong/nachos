@@ -319,11 +319,11 @@ void ExceptionHandler(ExceptionType which)
                 gSynchConsole->Write(buffer, endIndex);
                 delete[] buffer;
                 break;
-            }
+            }       
             case SC_ReadChar:
             {
-                char character;
-                int bytes = gSynchConsole->Read(&character,1);
+                char* buffer = new char[2];
+                int bytes = gSynchConsole->Read(buffer,2);
                 if(bytes > 1){
                     printf("\nPlease just enter 1 letter");
                     DEBUG('a',"\nPlease just enter 1 letter");
@@ -335,13 +335,14 @@ void ExceptionHandler(ExceptionType which)
                     machine->WriteRegister(2,0);	
                 }
                 else if(bytes < 0){
-                    DEBUG('a', "ERROR: Console error\n");
+                    printf("\nERROR: Console error\n");
+                    DEBUG('a', "\nERROR: Console error\n");
 			        machine->WriteRegister(2, 0);
                 }
                 else{
-                    machine->WriteRegister(2,character);
+                    machine->WriteRegister(2,buffer[0]);
                 }
-
+                delete[]buffer;
                 break;
             }
             case SC_PrintChar:
