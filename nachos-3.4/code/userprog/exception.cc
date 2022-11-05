@@ -181,152 +181,159 @@ void ExceptionHandler(ExceptionType which)
     {
         switch (type)
         {
-        case SC_Halt:
-        {
-            DEBUG('a', "Shutdown, initiated by user program\n");
-            interrupt->Halt();
-            break;
-        }
-        case SC_ReadInt:
-        {
-            char *buffer = new char[256];
-            int len = gSynchConsole->Read(buffer, 256);
-
-            int result = 0, startIndex = 0, endIndex = 0;
-            int sign = 1; // 1 - positive; -1 - negative
-
-            if (buffer[0] == '-')
+            case SC_Halt:
             {
-                startIndex = 1;
-                sign = -1;
+                DEBUG('a', "Shutdown, initiated by user program\n");
+                interrupt->Halt();
+                break;
             }
-
-            for (int i = startIndex; i < len; i++)
+            case SC_ReadInt:
             {
-                if (buffer[i] != '0')
-                    break;
-                startIndex = i;
-            }
+                char *buffer = new char[256];
+                int len = gSynchConsole->Read(buffer, 256);
 
-            // transform char[] to int
-            for (int i = startIndex; i < len; i++)
-            {
-                // .0000000000... case
-                if (buffer[i] == '.')
+                int result = 0, startIndex = 0, endIndex = 0;
+                int sign = 1; // 1 - positive; -1 - negative
+
+                if (buffer[0] == '-')
                 {
-                    for (int j = i + 1; j < len; j++)
-                        if (buffer[j] != '0')
-                        {
-                            machine->WriteRegister(2, 0);
-                            delete[] buffer;
-                            IncreasePC();
-                            printf("Invalid input, not an integer!\n");
-                            DEBUG('a', "Invalid input, not an integer!\n");
-                            return;
-                        }
-                    endIndex = i - 1;
-                    break;
+                    startIndex = 1;
+                    sign = -1;
                 }
 
-                // not even a number (!= 0,1,2,...,8,9)
-                if (buffer[i] < '0' || buffer[i] > '9')
+                for (int i = startIndex; i < len; i++)
+                {
+                    if (buffer[i] != '0')
+                        break;
+                    startIndex = i;
+                }
+
+                // transform char[] to int
+                for (int i = startIndex; i < len; i++)
+                {
+                    // .0000000000... case
+                    if (buffer[i] == '.')
+                    {
+                        for (int j = i + 1; j < len; j++)
+                            if (buffer[j] != '0')
+                            {
+                                machine->WriteRegister(2, 0);
+                                delete[] buffer;
+                                IncreasePC();
+                                printf("Invalid input, not an integer!\n");
+                                DEBUG('a', "Invalid input, not an integer!\n");
+                                return;
+                            }
+                        endIndex = i - 1;
+                        break;
+                    }
+
+                    // not even a number (!= 0,1,2,...,8,9)
+                    if (buffer[i] < '0' || buffer[i] > '9')
+                    {
+                        machine->WriteRegister(2, 0);
+                        delete[] buffer;
+                        IncreasePC();
+                        printf("Invalid input, not an integer!\n");
+                        DEBUG('a', "Invalid input, not an integer!\n");
+                        return;
+                    }
+
+                    result = result * 10 + (buffer[i] - 48) * sign;
+                    endIndex = i;
+                }
+
+                // overflow case
+                if (isOverflow(buffer, startIndex, endIndex, sign) == true)
                 {
                     machine->WriteRegister(2, 0);
                     delete[] buffer;
                     IncreasePC();
-                    printf("Invalid input, not an integer!\n");
-                    DEBUG('a', "Invalid input, not an integer!\n");
+                    printf("Input exceeds the range of 'int' datatype [-2.147.483.648 - 2.147.483.647]\n");
+                    DEBUG('a', "Input exceeds the range of 'int' datatype [-2.147.483.648 - 2.147.483.647]\n");
                     return;
                 }
 
-                result = result * 10 + (buffer[i] - 48) * sign;
-                endIndex = i;
-            }
-
-            // overflow case
-            if (isOverflow(buffer, startIndex, endIndex, sign) == true)
-            {
-                machine->WriteRegister(2, 0);
+                machine->WriteRegister(2, result);
                 delete[] buffer;
-                IncreasePC();
-                printf("Input exceeds the range of 'int' datatype [-2.147.483.648 - 2.147.483.647]\n");
-                DEBUG('a', "Input exceeds the range of 'int' datatype [-2.147.483.648 - 2.147.483.647]\n");
-                return;
+                break;
             }
-
-            machine->WriteRegister(2, result);
-            delete[] buffer;
-            break;
-        }
-        case SC_PrintInt:
-        {
-            int number = machine->ReadRegister(4);
-            char *buffer = new char[11];
-
-            int sign;
-            if (number >= 0)
-                sign = 1;
-            else
-                sign = -1;
-
-            int index = 10;
-            if (number == 0)
-                gSynchConsole->Write("0\n", 2);
-
-            while (number != 0)
+            case SC_PrintInt:
             {
-                buffer[index] = number % 10 * sign + 48;
-                number /= 10;
-                index--;
-            }
+                int number = machine->ReadRegister(4);
+                char *buffer = new char[11];
 
-            if (sign == -1)
+                int sign;
+                if (number >= 0)
+                    sign = 1;
+                else
+                    sign = -1;
+
+                int index = 10;
+                if (number == 0)
+                    gSynchConsole->Write("0\n", 2);
+
+                while (number != 0)
+                {
+                    buffer[index] = number % 10 * sign + 48;
+                    number /= 10;
+                    index--;
+                }
+
+                if (sign == -1)
+                {
+                    buffer[index] = '-';
+                    index--;
+                }
+                index++;
+                gSynchConsole->Write(buffer + index, 11 - index);
+                gSynchConsole->Write("\n", 1);
+
+                delete[] buffer;
+                break;
+            }
+            case SC_ReadString:
             {
-                buffer[index] = '-';
-                index--;
+                int virtAddr = machine->ReadRegister(4);
+                int reserved_length = machine->ReadRegister(5);
+
+                char *buffer = new char[reserved_length + 1];
+                int actual_length = gSynchConsole->Read(buffer, reserved_length);
+
+                buffer[actual_length] = '\0';
+
+                System2User(virtAddr, actual_length + 1, buffer);
+                delete[] buffer;
+                break;
             }
-            index++;
-            gSynchConsole->Write(buffer + index, 11 - index);
-            gSynchConsole->Write("\n", 1);
+            case SC_PrintString:
+            {
+                int virtAddr = machine->ReadRegister(4);
+                char *buffer;
 
-            delete[] buffer;
-            break;
-        }
-        case SC_ReadString:
-        {
-            int virtAddr = machine->ReadRegister(4);
-            int reserved_length = machine->ReadRegister(5);
+                buffer = User2System(virtAddr, 10000);
 
-            char *buffer = new char[reserved_length + 1];
-            int actual_length = gSynchConsole->Read(buffer, reserved_length);
+                int endIndex = 0;
+                while (buffer[endIndex] != '\0' && endIndex <= 10000)
+                    endIndex++;
 
-            buffer[actual_length] = '\n';
-
-            System2User(virtAddr, actual_length + 1, buffer);
-            delete[] buffer;
-            break;
-        }
-        case SC_PrintString:
-        {
-            int virtAddr = machine->ReadRegister(4);
-            char *buffer;
-
-            buffer = User2System(virtAddr, 10000);
-
-            int endIndex = 0;
-            while (buffer[endIndex] != '\0' && endIndex <= 10000)
-                endIndex++;
-
-            gSynchConsole->Write(buffer, endIndex + 1);
-            delete[] buffer;
-            break;
-        }
-        case SC_PrintChar:
-        {
-            char character = (char)machine->ReadRegister(4);
-	        gSynchConsole->Write(&character, 1);
-            break;
-        }
+                gSynchConsole->Write(buffer, endIndex + 1);
+                delete[] buffer;
+                break;
+            }
+            case SC_ReadChar:
+            {
+                char character;
+                gSynchConsole->Read(&character,1);
+                machine->WriteRegister(2,character);
+                break;
+            }
+            case SC_PrintChar:
+            {
+                char character = (char)machine->ReadRegister(4);
+                gSynchConsole->Write(&character, 1);
+                break;
+            }
         }
         IncreasePC();
         break;

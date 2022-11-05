@@ -5,11 +5,9 @@
 
 int main()
 {
-    char *buffer;
-    PrintString("Enter your name: ");
-    ReadString(buffer, 255);
-    PrintString("Name: ");
-    PrintString(buffer);
+    char buffer;
+    buffer = ReadChar();
+    PrintChar(buffer);
 
     Halt();
 }
