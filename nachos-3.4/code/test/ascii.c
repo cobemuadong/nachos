@@ -3,14 +3,15 @@
 int main()
 {
 	int i;
-	PrintString("Bang ma ascii\n");
+	PrintString("========== Bang ma Ascii ==========\n");
+	PrintString("He thap phan\tKy tu\n");
 
-	for (int i = 32; i < 127; i++)
+	for (i = 32; i < 127; i++)
 	{
-		c = char(i);
+		PrintChar('\t');
 		PrintInt(i);
 		PrintChar('\t');
-		PrintChar(c);
+		PrintChar(i);
 		PrintChar('\n');
 	}
 
