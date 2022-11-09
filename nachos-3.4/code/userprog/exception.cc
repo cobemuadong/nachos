@@ -271,7 +271,7 @@ void ExceptionHandler(ExceptionType which)
 
                 int index = 10;
                 if (number == 0)
-                    gSynchConsole->Write("0\n", 2);
+                    gSynchConsole->Write("0", 1);
 
                 while (number != 0)
                 {
