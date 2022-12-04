@@ -225,6 +225,12 @@ Thread::Sleep ()
     scheduler->Run(nextThread); // returns when we've been signalled
 }
 
+void Thread::FreeSpace(){
+    if(space != NULL){
+        delete space;
+    }
+}
+
 //----------------------------------------------------------------------
 // ThreadFinish, InterruptEnable, ThreadPrint
 //	Dummy functions because C++ does not allow a pointer to a member

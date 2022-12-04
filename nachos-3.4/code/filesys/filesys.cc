@@ -140,6 +140,38 @@ FileSystem::FileSystem(bool format)
         freeMapFile = new OpenFile(FreeMapSector);
         directoryFile = new OpenFile(DirectorySector);
     }
+
+    this->openTable = new OpenFile*[10];
+    for(int i = 0; i < 10; i++){
+        this->openTable[i] == NULL;
+    }
+    this->Create("stdin",0);
+    this->Create("stdout",0);
+    this->openTable[0] = this->Open("stdin", 2);
+    this->openTable[1] = this->Open("stdout",3);
+
+}
+
+FileSystem::~FileSystem(){
+    for(int i = 0; i < 10; i++){
+			if(this->openTable[i] != NULL){
+				delete this->openTable[i];
+			}
+		}
+	delete[] openTable;
+}
+
+int FileSystem::FindFreeSlot(){
+    for(int i = 2; i < 10; i++){
+        if(this->openTable[i] == NULL){
+            return i;
+        }
+        return -1;
+    }
+}
+
+OpenFile** FileSystem::GetOpenTable(){
+    return this->openTable;
 }
 
 //----------------------------------------------------------------------
@@ -238,6 +270,24 @@ FileSystem::Open(char *name)
 	openFile = new OpenFile(sector);	// name was found in directory 
     delete directory;
     return openFile;				// return NULL if not found
+}
+
+OpenFile *
+FileSystem::Open(char *name, int type)
+{ 
+    Directory *directory = new Directory(NumDirEntries);
+    // OpenFile *openFile = NULL;
+    int sector;
+    int freeSlot = this->FindFreeSlot();
+
+    DEBUG('f', "Opening file %s\n", name);
+    directory->FetchFrom(directoryFile);
+    sector = directory->Find(name); 
+    if (sector >= 0) 		
+	// openFile = new OpenFile(sector);	// name was found in directory 
+        this->openTable[freeSlot] = new OpenFile(sector, type);
+    delete directory;
+    return this->openTable[freeSlot];				// return NULL if not found
 }
 
 //----------------------------------------------------------------------
