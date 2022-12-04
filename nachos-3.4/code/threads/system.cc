@@ -33,6 +33,7 @@ SynchConsole *gSynchConsole;
 Semaphore* addrLock;
 PTable* pTab;
 BitMap* gPhysPageBitMap;
+STable* semTab;
 #endif
 
 #ifdef NETWORK
@@ -155,6 +156,7 @@ Initialize(int argc, char **argv)
     machine = new Machine(debugUserProg);	// this must come first
     gSynchConsole = new SynchConsole();
     
+    semTab = new STable();
     pTab = new PTable(MAXPROCESS);
 	gPhysPageBitMap = new BitMap(256);
 	addrLock = new Semaphore("addrLock", 1);
@@ -189,6 +191,7 @@ Cleanup()
     delete machine;
     delete gSynchConsole;
 
+    delete semTab;
     delete addrLock;
     delete gPhysPageBitMap;
     delete pTab;
