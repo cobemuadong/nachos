@@ -35,7 +35,7 @@ CPP = gcc -E
 INCDIR =-I../userprog -I../threads
 CFLAGS = -G 0 -c $(INCDIR)
 
-all: halt shell matmult sort ascii help syscall_int_demo syscall_char_demo syscall_string_demo
+all: halt shell matmult sort ascii help syscall_int_demo syscall_char_demo syscall_string_demo test
 
 start.o: start.s ../userprog/syscall.h
 	$(CPP) $(CPPFLAGS) start.c > strt.s
@@ -101,3 +101,9 @@ syscall_string_demo.o: syscall_string_demo.c
 syscall_string_demo: syscall_string_demo.o start.o
 	$(LD) $(LDFLAGS) start.o syscall_string_demo.o -o syscall_string_demo.coff
 	../bin/coff2noff syscall_string_demo.coff syscall_string_demo
+
+test.o: test.c
+	$(CC) $(CFLAGS) -c test.c
+test: test.o start.o
+	$(LD) $(LDFLAGS) start.o test.o -o test.coff
+	../bin/coff2noff test.coff test
