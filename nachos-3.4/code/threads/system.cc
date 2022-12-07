@@ -157,7 +157,7 @@ Initialize(int argc, char **argv)
     gSynchConsole = new SynchConsole();
     
     semTab = new STable();
-    pTab = new PTable(MAXPROCESS);
+    pTab = new PTable(MAX_PROCESS);
 	gPhysPageBitMap = new BitMap(256);
 	addrLock = new Semaphore("addrLock", 1);
 #endif

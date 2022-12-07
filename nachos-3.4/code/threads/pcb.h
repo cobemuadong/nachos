@@ -8,38 +8,45 @@
 class PCB
 {
 private:
-    Semaphore *joinsem; // semaphore cho quá trình join
-    Semaphore *exitsem; // semaphore cho quá trình exit    
-    Semaphore *mutex;   // semaphore cho quá trình truy xuất độc quyền
-    int exitcode;    
-    Thread *thread;     // tiến trình của chương trình
-    int pid;            //
-    int numwait ;       // số tiến trình đã join
+    Semaphore* joinsem;         // semaphore cho quá trình join
+    Semaphore* exitsem;         // semaphore cho quá trình exit
+    Semaphore* multex;          // semaphore cho quá trình truy xuất đọc quyền  
+
+    int exitcode;		
+    int numwait;                // số tiến trình đã join
+
+    char FileName[32];          // Ten cua tien trinh
+
+    Thread* thread;             // Tien trinh cua chuong trinh
 public:
-    int parentID;   // ID cua tien trinh cha
-    int JoinStatus; // Join Process ID, -1 if not
+    int parentID;               // ID cua tien trinh cha
+    
+    PCB(int = 0);               // Contructor
+    ~PCB();                     // Destructor
 
-    PCB(int = 0);   // Contructor
-    ~PCB();         // Destructor
+    int Exec(char*,int);        // Tao mot thread moi
+    int GetID();                // Trả về ProcessID của tiến trình gọi thực hiện
+    int GetNumWait();           // Trả về số lượng tiến trình chờ
 
-    int Exec(char *filename, int pid); //nap chuong trinh co ten luu trong bien filename va processID se la pID
-    int GetID();            // Trả về ProcessID của tiến trình gọi thực hiện
-    int GetNumWait();       // Trả về số lượng tiến trình chờ
 
-    char* GetName();
+    void JoinWait();            // 1. Tiến trình cha đợi tiến trình con kết thúc
+                        
+    void ExitWait();             // 4. Tiến trình con kết thúc
 
-    void JoinWait();    // 1. Tiến trình cha đợi tiến trình con kết thúc
-    void ExitWait();    // 4. Tiến trình con kết thúc
-    void JoinRelease(); // 2. Báo cho tiến trình cha thực thi tiếp
-    void ExitRelease(); // 3. Cho phép tiến trình con kết thúc
+    void JoinRelease();         // 2. Báo cho tiến trình cha thực thi tiếp
+    void ExitRelease();         // 3. Cho phép tiến trình con kết thúc
 
-    void IncNumWait(); // Tăng số tiến trình chờ
-    void DecNumWait(); // Giảm số tiến trình chờ
+    void IncNumWait();          // Tăng số tiến trình chờ
+    void DecNumWait();          // Giảm số tiến trình chờ
 
-    void SetExitCode(int); // Đặt exitcode của tiến trình
-    int GetExitCode();     // Trả về exitcode
+    void SetExitCode(int);      // Đặt exitcode của tiến trình
+    int GetExitCode();          // Trả về exitcode
+
+    void SetFileName(char*);    // Set ten tien trinh
+    char* GetFileName();        // Tra ve ten tien trinh
+
 };
 
-void MyStartProcess(int pID);
+
 
 #endif // PCB_H
