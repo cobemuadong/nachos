@@ -102,6 +102,12 @@ syscall_string_demo: syscall_string_demo.o start.o
 	$(LD) $(LDFLAGS) start.o syscall_string_demo.o -o syscall_string_demo.coff
 	../bin/coff2noff syscall_string_demo.coff syscall_string_demo
 
+test.o: test.c
+	$(CC) $(CFLAGS) -c test.c
+test: test.o start.o
+	$(LD) $(LDFLAGS) start.o test.o -o test.coff
+	../bin/coff2noff test.coff test
+
 ping.o: ping.c
 	$(CC) $(CFLAGS) -c ping.c
 ping: ping.o start.o
