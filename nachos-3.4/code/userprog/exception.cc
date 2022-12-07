@@ -392,8 +392,8 @@ void ExceptionHandler(ExceptionType which)
                 break;
             }
 
-            printf("\nCreate file '%s' success", filename);
-            DEBUG('a', "\nCreate file '%s' success", filename);
+            printf("\nCreate file '%s' success\n", filename);
+            DEBUG('a', "\nCreate file '%s' success\n", filename);
             machine->WriteRegister(2, 0);
             delete[] filename;
             break;
@@ -583,7 +583,7 @@ void ExceptionHandler(ExceptionType which)
             }
         }
         case SC_Exec:
-        {
+        {  
             int virtAddr = machine->ReadRegister(4);
             char* name = User2System(virtAddr, MAX_FILE_LENGTH + 1);
 
