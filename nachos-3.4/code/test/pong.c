@@ -2,8 +2,8 @@
 
 int main ()
 {
-    int i =1000;
-    while(i)
+    int i = 1000;
+    while(i > 0)
     {
         Wait("ping");
         PrintString("pong\n");

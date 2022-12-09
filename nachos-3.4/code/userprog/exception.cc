@@ -512,7 +512,6 @@ void ExceptionHandler(ExceptionType which)
             }
             else
             {
-                printf("\nEmpty File!");
                 DEBUG('a', "\nEmpty File!");
                 machine->WriteRegister(2, -2);
             }
@@ -641,7 +640,7 @@ void ExceptionHandler(ExceptionType which)
             }
 
             int result = semTab->Create(name, semval);
-            if(result <= 0){
+            if(result < 0){
                 printf("\nExec:: Error");
                 DEBUG('a',"\nExec:: Error");
                 machine->WriteRegister(2, -1);
