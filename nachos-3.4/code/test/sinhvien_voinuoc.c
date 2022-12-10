@@ -84,12 +84,11 @@ int main()
         }
         while(Read(&charRead, 1, inputFD) > 0)
         {
-            PrintString("Bien dem: ");
-            PrintChar(charRead);
-            PrintString("\n");
             if(charRead == '\n')
                 break;
-            Write(&charRead, 1, sinhvienFD);
+            if((charRead >= '0' && charRead <='9') || charRead == ' '){
+                Write(&charRead, 1, sinhvienFD);
+            }
         }
         Write("\0", 1, sinhvienFD);
         Close(sinhvienFD);

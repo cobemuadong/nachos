@@ -28,7 +28,9 @@ int main()
             while (Read(&charRead, 1, voinuocFD) > 0)
             {
                 if(charRead == '\0')
+                {
                     break;
+                }
                 dungtichBinh = dungtichBinh * 10 + charRead - '0';
             }
 
@@ -56,6 +58,7 @@ int main()
             }
 
             // het thoi diem
+        
             if (charRead == '\0')
             {
                 Write("\n", 1, outputFD);

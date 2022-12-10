@@ -511,8 +511,8 @@ void ExceptionHandler(ExceptionType which)
             }
             else
             {
-                printf("\nEmpty File!");
-                DEBUG('a', "\nEmpty File!");
+                // printf("\nEmpty File!");
+                // DEBUG('a', "\nEmpty File!");
                 machine->WriteRegister(2, -2);
             }
             delete[] buf;

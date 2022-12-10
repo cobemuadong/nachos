@@ -22,12 +22,15 @@ int main()
         {
             // check if file is not empty
             isNotBlank++;
-            // reach a character that is not a number
             if (charRead < '0' || '9' < charRead)
             {
                 // end of file
                 if (charRead == '\0')
                 {
+            
+                    PrintString("Bien dem: ");
+                    PrintChar(charRead);
+                    PrintString("\n");
                     Write("\0", 1, voinuocFD);
                     Write(" ", 1, outputFD);                    
 
@@ -79,9 +82,9 @@ int main()
 
 
         // end of mainProcess
-        if (isNotBlank != false)
-            break;
-        PrintString("hihi");
+        // if (isNotBlank != false)
+        //     break;
+        // PrintString("hihi");
         Signal("subProcess");
     }
 
