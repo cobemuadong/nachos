@@ -1,48 +1,91 @@
 #include "syscall.h"
+#define false 0
 
 int main()
 {
-    int sinhvienFD;
+    int sinhvienFD, voinuocFD, outputFD;
+    int svCount;
     int pA[100];
-    int sinhvienCount = 1, i = 0;
-    char charRead;
+    int isNotBlank;
+    char charRead, prevChar;
 
-    //store sinhvien data
-    Wait("read_sinhvien.txt");
-    sinhvienFD = Open("sinhvien.txt", 1);
-    i = 0;
-    pA[i] = 0;
-    while(Read(&charRead, 1, sinhvienFD) > 0)
+    while (1)
     {
-        if(charRead < '0' || charRead > '9')
+        Wait("mainProcess");
+        isNotBlank = false; // file is empty by default
+        prevChar = 1; // dummy value
+        
+        Create("voinuoc.txt");
+        sinhvienFD = Open("sinhvien.txt", 1);
+
+        while(Read(&charRead, 1, sinhvienFD) > 0)
         {
-            // skip character that is not a number
-            while(Read(&charRead, 1, sinhvienFD) > 0)
-                if (charRead >= '0' && charRead <= '9')
+            // check if file is not empty
+            isNotBlank++;
+            PrintChar(charRead);
+            // reach a character that is not a number
+            if (charRead < '0' || '9' < charRead)
+            {
+                // end of file
+                if (charRead == '\0')
+                {
+                    Write("\0", 1, voinuocFD);
+                    Write(" ", 1, outputFD);                    
+
+                    Close(voinuocFD);
+                    Close(outputFD);
+                    
+                    Signal("print_sinhvien");
+                    Wait("print_voinuoc");
                     break;
-            
-            // end of file detected
-            if(charRead < '0' || charRead > '9')
-                break;
+                }
+                else if ('0' <= prevChar && prevChar <= '9')
+                {
+                    prevChar = charRead;
+                    Write(" ", 1, outputFD);
 
-            // new number encountered
-            sinhvienCount++;     
-            i++;
-            pA[i] = 0;
+                    Close(voinuocFD);
+                    Close(outputFD);
+
+                    Signal("print_sinhvien");
+                    Wait("print_voinuoc");
+                    continue;
+                }
+                else
+                {
+                    prevChar = charRead;
+                    continue;
+                }
+            }
+
+            // reach a new number
+            if (prevChar < '0' || prevChar < '9')
+            {
+                Create("voinuoc.txt");
+                voinuocFD = Open("voinuoc.txt", 0);
+                outputFD = Open("output.txt", 0);
+
+                //seek to end of output.txt
+                while(Read(&prevChar, 1, outputFD) > 0)
+                    continue;
+            }
+
+            // normal works
+            Write(&charRead, 1, voinuocFD);
+            Write(&charRead, 1, outputFD);
+            prevChar = charRead;
+
         }
-        pA[i] = pA[i] * 10 + charRead - '0';
-    }
-    Close(sinhvienFD);
-    Signal("read_sinhvien.txt");
+        Close(sinhvienFD);
 
-    // xu ly chuong trinh
-    for (i = 0; i < sinhvienCount; i++)
-    {
-        Wait("print_voinuoc");
-        PrintInt(pA[i]);
-        PrintChar(' ');
-        Signal("print_sinhvien");
+
+        // end of mainProcess
+        if (isNotBlank != false)
+            break;
+        PrintString("hihi");
+        Signal("subProcess");
     }
 
-
+    Signal("subProcess");
+    return 1;
 }

@@ -2,63 +2,76 @@
 
 int main()
 {
-    int sinhvienFD;
-    int pA[100];
-    int sinhvienCount = 1, i = 0;
-    char charRead;
+    int voinuocFD, outputFD;
+    int dungtichBinh = 0;
     int voi1 = 0, voi2 = 0;
+    char charRead;
 
-    //store sinhvien data
-    Wait("read_sinhvien.txt");
-    sinhvienFD = Open("sinhvien.txt", 1);
-    i = 0;
-    pA[i] = 0;
-    while(Read(&charRead, 1, sinhvienFD) > 0)
+    // each time in mainProcess loop
+    while (1)
     {
-        if(charRead < '0' || charRead > '9')
+        voi1 = 0;
+        voi2 = 0;
+
+        // each student in ont time loop
+        while (1)
         {
-            // skip character that is not a number
-            while(Read(&charRead, 1, sinhvienFD) > 0)
-                if (charRead >= '0' && charRead <= '9')
+            Wait("print_sinhvien");
+            dungtichBinh = 0;
+            voinuocFD = Open("voinuoc.txt", 1);
+            outputFD = Open("output.txt", 0);
+
+            // seek to the end of output.txt
+            while (Read(&charRead, 1, outputFD) > 0)
+                continue;
+
+            while (Read(&charRead, 1, voinuocFD) > 0)
+            {
+                if(charRead == '\0')
                     break;
-            
-            // end of file detected
-            if(charRead < '0' || charRead > '9')
+                dungtichBinh = dungtichBinh * 10 + charRead - '0';
+            }
+
+            if (voi1 == 0)
+            {
+                voi1 = dungtichBinh;
+                Write("1", 1, outputFD);
+            }
+            else
+            {
+                voi2 = dungtichBinh;
+                Write("2", 1, outputFD);                
+            }
+
+            // rot' nuoc' simulator
+            if (voi1 >= voi2)
+            {
+                voi1 = voi1 - voi2;
+                voi2 = 0;
+            }
+            else
+            {
+                voi2 = voi2 - voi1;
+                voi1 = 0;
+            }
+
+            // het thoi diem
+            if (charRead == '\0')
+            {
+                Write("\n", 1, outputFD);
+                Close(voinuocFD);
+                Close(outputFD);
+                Signal("print_voinuoc");
                 break;
-
-            // new number encountered
-            sinhvienCount++;     
-            i++;
-            pA[i] = 0;
+            }
+            else
+            {
+                Write("    ", 4, outputFD);
+                Close(voinuocFD);
+                Close(outputFD);
+                Signal("print_voinuoc");
+            }
+            
         }
-        pA[i] = pA[i] * 10 + charRead - '0';
     }
-    Close(sinhvienFD);
-    Signal("read_sinhvien.txt");
-
-
-    // xu ly voi nuoc
-    for(i = 0; i < sinhvienCount; i++)
-    {
-        Wait("print_sinhvien");
-        if (voi1 == 0)
-        {
-            voi1 = pA[i];
-            PrintString("1\n");            
-        }
-        else
-        {
-            voi2 = pA[i];
-            PrintString("2\n");            
-        }
-        
-        while(voi1 > 0 && voi2 > 0)
-        {
-            voi1--;
-            voi2--;
-        }
-        Signal("print_voinuoc");
-    }
-
-    Signal("process");
 }
