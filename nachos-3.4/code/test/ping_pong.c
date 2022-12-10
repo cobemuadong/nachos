@@ -4,7 +4,7 @@ int main()
 {
     int pingPID, pongPID;
 	PrintString("Ping-Pong test starting...\n\n");
-	CreateSemaphore("ping" , 0);
+	CreateSemaphore("ping" , 1);
 	CreateSemaphore("pong" , 1);
 	pingPID = Exec("./test/ping");
 	pongPID = Exec("./test/pong"); 

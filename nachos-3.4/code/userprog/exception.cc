@@ -641,8 +641,8 @@ void ExceptionHandler(ExceptionType which)
 
             int result = semTab->Create(name, semval);
             if(result < 0){
-                printf("\nExec:: Error");
-                DEBUG('a',"\nExec:: Error");
+                printf("\nExec:: Cannot create semaphore");
+                DEBUG('a',"\nExec:: Cannot create semaphore");
                 machine->WriteRegister(2, -1);
                 delete[]name;
                 break;
