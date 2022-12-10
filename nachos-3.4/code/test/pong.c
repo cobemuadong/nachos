@@ -2,13 +2,11 @@
 
 int main ()
 {
-    int i = 1000;
-    while(i > 0)
+    int i;
+    for(i = 0; i < 1000; i++)
     {
         Wait("ping");
-        PrintString("pong\n");
-        i--;
+        PrintChar('B');
         Signal("pong");
-    }
-    return 0;
+    }   
 }
