@@ -21,7 +21,7 @@ PTable::PTable(int size)
 	bm->Mark(0);
 
 	pcb[0] = new PCB(0);
-	// pcb[0]->SetFileName("./test/ping_pong");
+	pcb[0]->SetFileName("./test/sinhvien_voinuoc");
 	pcb[0]->parentID = -1;
 }
 

@@ -128,7 +128,6 @@ void ExceptionHandler(ExceptionType which)
     case NoException:
     {
         return;
-        break;
     }
     case PageFaultException:
     {
@@ -512,6 +511,7 @@ void ExceptionHandler(ExceptionType which)
             }
             else
             {
+                printf("\nEmpty File!");
                 DEBUG('a', "\nEmpty File!");
                 machine->WriteRegister(2, -2);
             }

@@ -38,6 +38,7 @@ int STable::Create(char *name, int init)
         {
             if (strcmp(name, lockTab[i]->GetName()) == 0)
             {
+                printf("\nSemaphore already exist!");
                 return -1;
             }
         }
@@ -47,9 +48,11 @@ int STable::Create(char *name, int init)
 
     if (id < 0)
     {
+        printf("\nNo Space left!");
         return -1;
     }
 
+    printf("\nCreate semaphore success %d",id);
     this->lockTab[id] = new Sem(name, init);
     return 0;
 }

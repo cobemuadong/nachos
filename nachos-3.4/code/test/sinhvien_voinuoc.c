@@ -6,14 +6,29 @@ int main()
     int sinhvienPID, voinuocPID;
     int timeCount;
     char charRead;
+    int success = 0;
 
-    // tao cac semaphore
-    CreateSemaphore("mainProcess", 0);
-    CreateSemaphore("subProcess", 0);
-    CreateSemaphore("print_sinhvien", 0);          
-    CreateSemaphore("print_voinuoc", 0);
-    CreateSemaphore("open_sinhvien.txt", 1);
-
+    //tao cac semaphore
+    success = CreateSemaphore("print_sinhvien", 0);       
+    if(success == -1){
+        return 0;
+    }
+    success = CreateSemaphore("print_voinuoc", 0);
+    if(success == -1){
+        return 0;
+    }
+    success =  CreateSemaphore("open_sinhvien.txt", 1);
+    if(success == -1){
+        return 0;
+    }
+    success = CreateSemaphore("mainProcess", 0);
+    if(success == -1){
+        return 0;
+    }
+    success = CreateSemaphore("subProcess", 0);
+    if(success == -1){
+        return 0;
+    }
     Create("output.txt");
     Create("sinhvien.txt");
     inputFD = Open("input.txt", 1);
@@ -25,13 +40,20 @@ int main()
 
     // doc so thoi diem uong nuoc
     timeCount = 0;
-    while(Read(&charRead, 1, inputFD) > 0)
+    while(1)
     {
-        if(charRead == '\n')
-            break;
-        timeCount = timeCount * 10 + charRead - '0';
+        if(Read(&charRead, 1, inputFD) > 0){
+            if(charRead =='\n')
+            {
+                break;
+            }
+            if(charRead >= '0'  && charRead <= '9')
+            {
+                timeCount = timeCount * 10 + (charRead - '0');
+            }
+        }
     }
-
+    
     sinhvienPID = Exec("./test/sinhvien");
     if (sinhvienPID == -1)
     {
@@ -62,6 +84,9 @@ int main()
         }
         while(Read(&charRead, 1, inputFD) > 0)
         {
+            PrintString("Bien dem: ");
+            PrintChar(charRead);
+            PrintString("\n");
             if(charRead == '\n')
                 break;
             Write(&charRead, 1, sinhvienFD);

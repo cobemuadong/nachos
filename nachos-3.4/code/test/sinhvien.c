@@ -22,7 +22,6 @@ int main()
         {
             // check if file is not empty
             isNotBlank++;
-            PrintChar(charRead);
             // reach a character that is not a number
             if (charRead < '0' || '9' < charRead)
             {
