@@ -27,10 +27,6 @@ int main()
                 // end of file
                 if (charRead == '\0')
                 {
-            
-                    PrintString("Bien dem: ");
-                    PrintChar(charRead);
-                    PrintString("\n");
                     Write("\0", 1, voinuocFD);
                     Write(" ", 1, outputFD);                    
 
