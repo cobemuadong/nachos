@@ -5,14 +5,11 @@ int main()
 {
     int sinhvienFD, voinuocFD, outputFD;
     int svCount;
-    int pA[100];
-    int isNotBlank;
     char charRead, prevChar;
 
     while (1)
     {
         Wait("mainProcess");
-        isNotBlank = false; // file is empty by default
         prevChar = 1; // dummy value
         
         CreateFile("voinuoc.txt");
@@ -20,8 +17,6 @@ int main()
 
         while(Read(&charRead, 1, sinhvienFD) > 0)
         {
-            // check if file is not empty
-            isNotBlank++;
             if (charRead < '0' || '9' < charRead)
             {
                 // end of file
@@ -68,7 +63,7 @@ int main()
                     continue;
             }
 
-            // normal works
+            // default case
             Write(&charRead, 1, voinuocFD);
             Write(&charRead, 1, outputFD);
             prevChar = charRead;
@@ -76,11 +71,7 @@ int main()
         }
         Close(sinhvienFD);
 
-
-        // end of mainProcess
-        // if (isNotBlank != false)
-        //     break;
-        // PrintString("hihi");
+        // return to mainProcess
         Signal("subProcess");
     }
 

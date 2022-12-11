@@ -35,7 +35,7 @@ CPP = gcc -E
 INCDIR =-I../userprog -I../threads
 CFLAGS = -G 0 -c $(INCDIR)
 
-all: halt shell matmult sort test ascii help syscall_int_demo syscall_char_demo syscall_string_demo ping pong ping_pong sinhvien_voinuoc sinhvien voinuoc
+all: halt shell matmult sort test ascii help syscall_int_demo syscall_char_demo syscall_string_demo ping pong scheduler main sinhvien voinuoc
 
 start.o: start.s ../userprog/syscall.h
 	$(CPP) $(CPPFLAGS) start.c > strt.s
@@ -120,17 +120,17 @@ pong: pong.o start.o
 	$(LD) $(LDFLAGS) start.o pong.o -o pong.coff
 	../bin/coff2noff pong.coff pong
 
-ping_pong.o: ping_pong.c
-	$(CC) $(CFLAGS) -c ping_pong.c
-ping_pong: ping_pong.o start.o
-	$(LD) $(LDFLAGS) start.o ping_pong.o -o ping_pong.coff
-	../bin/coff2noff ping_pong.coff ping_pong
+scheduler.o: scheduler.c
+	$(CC) $(CFLAGS) -c scheduler.c
+scheduler: scheduler.o start.o
+	$(LD) $(LDFLAGS) start.o scheduler.o -o scheduler.coff
+	../bin/coff2noff scheduler.coff scheduler
 
-sinhvien_voinuoc.o: sinhvien_voinuoc.c
-	$(CC) $(CFLAGS) -c sinhvien_voinuoc.c
-sinhvien_voinuoc: sinhvien_voinuoc.o start.o
-	$(LD) $(LDFLAGS) start.o sinhvien_voinuoc.o -o sinhvien_voinuoc.coff
-	../bin/coff2noff sinhvien_voinuoc.coff sinhvien_voinuoc
+main.o: main.c
+	$(CC) $(CFLAGS) -c main.c
+main: main.o start.o
+	$(LD) $(LDFLAGS) start.o main.o -o main.coff
+	../bin/coff2noff main.coff main
 
 sinhvien.o: sinhvien.c
 	$(CC) $(CFLAGS) -c sinhvien.c
