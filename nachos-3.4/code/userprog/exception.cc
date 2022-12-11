@@ -404,10 +404,28 @@ void ExceptionHandler(ExceptionType which)
             int type = machine->ReadRegister(5);
             int freeSlot = fileSystem->FindFreeSlot();
 
+            if (strlen(filename) == 0)
+            {
+                printf("\nFile name is not valid");
+                DEBUG('a', "\nFile name is not valid");
+                machine->WriteRegister(2, -1);
+                delete[] filename;
+                break;
+            }
+
+            if (filename == NULL)
+            {
+                printf("\n Not enough memory in system");
+                DEBUG('a', "\n Not enough memory in system");
+                machine->WriteRegister(2, -1);
+                delete[] filename;
+                break;
+            }
+
             if (freeSlot < 0)
             {
-                printf("\nError");
-                DEBUG('d', "\nError");
+                printf("\nError: No free slot found");
+                DEBUG('d', "\nError: No free slot found");
                 delete[] filename;
                 break;
             }
@@ -495,6 +513,19 @@ void ExceptionHandler(ExceptionType which)
             if (fileSystem->GetOpenTable()[id]->GetType() == 2)
             {   
                 int size = gSynchConsole->Read(buf, charCount); 
+                if(size < 0){
+                    printf("\nERROR: Console error\n");
+                    DEBUG('a', "\nERROR: Console error\n");
+                    machine->WriteRegister(2, -1);
+                    break;
+                }
+                else if(size == 0){
+                    printf("\nEnd of file\n");
+                    DEBUG('a', "\nEnd of file\n");
+                    machine->WriteRegister(2, -2);
+                    delete[]buf;
+                    break;
+                }
 				System2User(virtAddr, size, buf); // Copy chuoi tu vung nho System Space sang User Space voi bo dem buffer co do dai la so byte thuc su
                 machine->WriteRegister(2, size); // Tra ve so byte thuc su doc duoc
                 delete[] buf;
@@ -511,8 +542,8 @@ void ExceptionHandler(ExceptionType which)
             }
             else
             {
-                // printf("\nEmpty File!");
-                // DEBUG('a', "\nEmpty File!");
+                // printf("\nEnd of File!");
+                // DEBUG('a', "\nEnd of File!");
                 machine->WriteRegister(2, -2);
             }
             delete[] buf;
