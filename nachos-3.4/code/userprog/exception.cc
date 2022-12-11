@@ -356,7 +356,7 @@ void ExceptionHandler(ExceptionType which)
             gSynchConsole->Write(&character, 1);
             break;
         }
-        case SC_Create:
+        case SC_CreateFile:
         {
             int virtAddr;
             char *filename;
