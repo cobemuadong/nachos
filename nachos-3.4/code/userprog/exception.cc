@@ -640,16 +640,16 @@ void ExceptionHandler(ExceptionType which)
                 break;
             }
 
-            OpenFile* openFile = fileSystem->Open(name);
+            // OpenFile* openFile = fileSystem->Open(name);
             
-            if(openFile == NULL){
-                printf("\nExec:: Can't open this file.");
-                DEBUG('a',"\nExec:: Can't open this file.");
-				machine->WriteRegister(2,-1);
-				break;
-            }
+            // if(openFile == NULL){
+            //     printf("\nExec:: Can't open this file.");
+            //     DEBUG('a',"\nExec:: Can't open this file.");
+			// 	machine->WriteRegister(2,-1);
+			// 	break;
+            // }
 
-            delete openFile;
+            // delete openFile;
 
             int pid = pTab->ExecUpdate(name);
             machine->WriteRegister(2, pid);
