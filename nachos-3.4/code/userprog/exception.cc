@@ -482,6 +482,7 @@ void ExceptionHandler(ExceptionType which)
             int oldPos;
             int newPos;
             char *buf;
+            int result;
             int fileLength;
 
             if (id < 0 || id > 9)
@@ -533,18 +534,24 @@ void ExceptionHandler(ExceptionType which)
             }
 
             oldPos = fileSystem->GetOpenTable()[id]->GetCurrentPos();
-            if (fileSystem->GetOpenTable()[id]->Read(buf, charCount) > 0)
+
+            result = fileSystem->GetOpenTable()[id]->Read(buf, charCount);
+            if (result > 0)
             {
                 newPos = fileSystem->GetOpenTable()[id]->GetCurrentPos();
                 fileLength = newPos - oldPos;
                 System2User(virtAddr, fileLength, buf);
                 machine->WriteRegister(2, fileLength);
             }
-            else
+            else if(result == 0)
             {
                 // printf("\nEnd of File!");
                 // DEBUG('a', "\nEnd of File!");
                 machine->WriteRegister(2, -2);
+            }
+            else{
+                machine->WriteRegister(2, -1);
+                break;
             }
             delete[] buf;
             break;
