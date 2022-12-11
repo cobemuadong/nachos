@@ -29,8 +29,8 @@ int main()
     if(success == -1){
         return 0;
     }
-    Create("output.txt");
-    Create("sinhvien.txt");
+    CreateFile("output.txt");
+    CreateFile("sinhvien.txt");
     inputFD = Open("input.txt", 1);
     if (inputFD == -1)
     {
@@ -99,7 +99,7 @@ int main()
         // doi chuong trinh sinh vien, voi nuoc chay xong
         Wait("subProcess");
 
-        Create("sinhvien.txt");
+        CreateFile("sinhvien.txt");
         timeCount--;
     }
     Close(inputFD);

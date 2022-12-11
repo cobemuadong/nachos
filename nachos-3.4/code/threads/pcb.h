@@ -31,7 +31,7 @@ public:
 
     void JoinWait();            // 1. Tiến trình cha đợi tiến trình con kết thúc
                         
-    void ExitWait();             // 4. Tiến trình con kết thúc
+    void ExitWait();            // 4. Tiến trình con kết thúc
 
     void JoinRelease();         // 2. Báo cho tiến trình cha thực thi tiếp
     void ExitRelease();         // 3. Cho phép tiến trình con kết thúc

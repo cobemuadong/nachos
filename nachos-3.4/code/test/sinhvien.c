@@ -15,7 +15,7 @@ int main()
         isNotBlank = false; // file is empty by default
         prevChar = 1; // dummy value
         
-        Create("voinuoc.txt");
+        CreateFile("voinuoc.txt");
         sinhvienFD = Open("sinhvien.txt", 1);
 
         while(Read(&charRead, 1, sinhvienFD) > 0)
@@ -59,7 +59,7 @@ int main()
             // reach a new number
             if (prevChar < '0' || prevChar < '9')
             {
-                Create("voinuoc.txt");
+                CreateFile("voinuoc.txt");
                 voinuocFD = Open("voinuoc.txt", 0);
                 outputFD = Open("output.txt", 0);
 

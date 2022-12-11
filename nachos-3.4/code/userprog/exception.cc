@@ -565,6 +565,7 @@ void ExceptionHandler(ExceptionType which)
             int newPos;
             int fileLength;
             char *buf;
+            int type;
 
             if (id < 0 || id > 9)
             {
@@ -582,7 +583,8 @@ void ExceptionHandler(ExceptionType which)
                 break;
             }
 
-            if (fileSystem->GetOpenTable()[id]->GetType() == 1 || fileSystem->GetOpenTable()[id]->GetType() == 2)
+            type = fileSystem->GetOpenTable()[id]->GetType();
+            if (type == 1 || type == 2)
             {
                 printf("\nCan't write!! stdin or Read Only mode!");
                 DEBUG('a', "\nCan't write!! stdin or Read Only mode!");
@@ -592,7 +594,7 @@ void ExceptionHandler(ExceptionType which)
 
             oldPos = fileSystem->GetOpenTable()[id]->GetCurrentPos();
             buf = User2System(virtAddr, charCount);
-            if (fileSystem->GetOpenTable()[id]->GetType() == 0)
+            if (type == 0)
             {
                 if (fileSystem->GetOpenTable()[id]->Write(buf, charCount) > 0)
                 {
@@ -604,20 +606,26 @@ void ExceptionHandler(ExceptionType which)
                 }
             }
 
-            if (fileSystem->GetOpenTable()[id]->GetType() == 3)
+            if (type == 3)
             {
                 int i = 0;
-                while (buf[i] != 0 && buf[i] != '\n') // Vong lap de write den khi gap ky tu '\n'
+                while (buf[i] != 0 && buf[i] != '\n') 
                 {
-                    gSynchConsole->Write(buf + i, 1); // Su dung ham Write cua lop SynchConsole
+                    gSynchConsole->Write(buf + i, 1); 
                     i++;
                 }
                 buf[i] = '\n';
-                gSynchConsole->Write(buf + i, 1); // Write ky tu '\n'
-                machine->WriteRegister(2, i - 1); // Tra ve so byte thuc su write duoc
+                gSynchConsole->Write(buf + i, 1); // Write '\n'
+                machine->WriteRegister(2, i - 1); 
                 delete[]buf;
                 break;;
             }
+            
+            printf("\nWrite:: An error occurs when write!");
+            DEBUG('a',"\nWrite:: An error occurs when write!");
+            machine->WriteRegister(2, -1);
+            delete[] buf;
+            break;
         }
         case SC_Exec:
         {  

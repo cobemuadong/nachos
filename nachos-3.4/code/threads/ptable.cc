@@ -17,7 +17,7 @@ PTable::PTable(int size)
 	{
 		pcb[i] = 0;
 	}
-
+	
 	bm->Mark(0);
 
 	pcb[0] = new PCB(0);
@@ -55,7 +55,7 @@ int PTable::ExecUpdate(char *name)
 		return -1;
 	}
 	// So sánh tên chương trình và tên của currentThread để chắc chắn rằng chương trình này không gọi thực thi chính nó.
-	if (strcmp(name, "./test/scheduler") == 0 || strcmp(name, currentThread->getName()) == 0)
+	if (strcmp(name, "./test/sinhvien_voinuoc") == 0 || strcmp(name, currentThread->getName()) == 0)
 	{
 		printf("\nPTable::Exec : Can't not execute itself.\n");
 		bmsem->V();
@@ -124,32 +124,30 @@ int PTable::JoinUpdate(int id)
 int PTable::ExitUpdate(int exitcode)
 {
 	// Nếu tiến trình gọi là main process thì gọi Halt().
-	int id = currentThread->processID;
-	if (id == 0)
-	{
-
+	int pid = currentThread->processID;
+	if(pid == 0){
 		currentThread->FreeSpace();
 		interrupt->Halt();
 		return 0;
 	}
 
-	if (IsExist(id) == false)
+	if (IsExist(pid) == false)
 	{
-		printf("\nPTable::ExitUpdate: This %d is not exist. Try again?", id);
+		printf("\nPTable::ExitUpdate: This %d is not exist. Try again?", pid);
 		return -1;
 	}
 
 	// Ngược lại gọi SetExitCode để đặt exitcode cho tiến trình gọi.
-	pcb[id]->SetExitCode(exitcode);
-	pcb[pcb[id]->parentID]->DecNumWait();
+	pcb[pid]->SetExitCode(exitcode);
+	pcb[pcb[pid]->parentID]->DecNumWait();
 
 	// Gọi JoinRelease để giải phóng tiến trình cha đang đợi nó(nếu có) và ExitWait() để xin tiến trình cha
 	// cho phép thoát.
-	pcb[id]->JoinRelease();
+	pcb[pid]->JoinRelease();
 	//
-	pcb[id]->ExitWait();
+	pcb[pid]->ExitWait();
 
-	Remove(id);
+	Remove(pid);
 	return exitcode;
 }
 
