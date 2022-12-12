@@ -17,10 +17,6 @@ int main()
     if(success == -1){
         return 0;
     }
-    success =  CreateSemaphore("open_sinhvien.txt", 1);
-    if(success == -1){
-        return 0;
-    }
     success = CreateSemaphore("mainProcess", 0);
     if(success == -1){
         return 0;
@@ -29,6 +25,7 @@ int main()
     if(success == -1){
         return 0;
     }
+
     CreateFile("output.txt");
     CreateFile("sinhvien.txt");
     inputFD = Open("input.txt", 1);
@@ -74,7 +71,6 @@ int main()
     while (timeCount > 0)
     {
         // luu thong tin binh nuoc cua sinh vien tai 1 thoi diem vao file sinhvien.txt
-        Wait("open_sinhvien.txt");
         sinhvienFD = Open("sinhvien.txt", 0);
         if (sinhvienFD == -1)
         {
@@ -92,7 +88,7 @@ int main()
         }
         Write("\0", 1, sinhvienFD);
         Close(sinhvienFD);
-        Signal("open_sinhvien.txt");
+        
         // cho phep chuong trinh sinh vien, voi nuoc chay.
         Signal("mainProcess");
 
